@@ -1,0 +1,112 @@
+# Chestionare-RBY
+Chestionare auto cat B
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ChestionareRBY - Categoria B</title>
+<style>
+body { font-family: Arial; background:#111; color:white; text-align:center; }
+.container { background:#1c1c1c; padding:20px; margin:40px auto; width:90%; max-width:600px; border-radius:10px; }
+button { padding:10px 20px; margin-top:15px; background:#00c853; border:none; color:white; cursor:pointer; }
+.correct { color:#00e676; }
+.wrong { color:#ff5252; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2 id="timer">Timp rămas: 30:00</h2>
+<h3 id="question"></h3>
+<div id="answers"></div>
+<button onclick="nextQuestion()">Confirmă</button>
+</div>
+
+<script>
+
+let questions = [
+{
+q:"Care este viteza maximă în localitate?",
+a:["50 km/h","90 km/h","30 km/h"],
+correct:0
+},
+{
+q:"Culoarea roșie a semaforului indică:",
+a:["Reduci viteza","Oprești","Poți continua"],
+correct:1
+},
+{
+q:"Depășirea este interzisă:",
+a:["În curbă fără vizibilitate","Pe autostradă","Pe drum drept"],
+correct:0
+}
+];
+
+while(questions.length < 26){
+questions.push(questions[Math.floor(Math.random()*3)]);
+}
+
+let current = 0;
+let score = 0;
+let wrongAnswers = [];
+
+function loadQuestion(){
+document.getElementById("question").innerText = "Întrebarea " + (current+1) + ": " + questions[current].q;
+let answersHTML = "";
+questions[current].a.forEach((ans,index)=>{
+answersHTML += `<input type="radio" name="ans" value="${index}"> ${ans}<br>`;
+});
+document.getElementById("answers").innerHTML = answersHTML;
+}
+
+function nextQuestion(){
+let selected = document.querySelector('input[name="ans"]:checked');
+if(!selected){ alert("Selectează un răspuns!"); return; }
+
+if(parseInt(selected.value) === questions[current].correct){
+score++;
+}else{
+wrongAnswers.push({
+question:questions[current].q,
+correct:questions[current].a[questions[current].correct]
+});
+}
+
+current++;
+if(current < 26){
+loadQuestion();
+}else{
+showResults();
+}
+}
+
+function showResults(){
+let resultHTML = `<h2>Rezultat: ${score}/26</h2>`;
+resultHTML += score >= 22 ? "<h3 class='correct'>ADMIS</h3>" : "<h3 class='wrong'>RESPINS</h3>";
+
+if(wrongAnswers.length > 0){
+resultHTML += "<h3>Întrebări greșite:</h3>";
+wrongAnswers.forEach(w=>{
+resultHTML += `<p><b>${w.question}</b><br>Răspuns corect: ${w.correct}</p>`;
+});
+}
+
+document.body.innerHTML = resultHTML;
+}
+
+let time = 1800;
+setInterval(function(){
+let minutes = Math.floor(time/60);
+let seconds = time%60;
+document.getElementById("timer").innerText =
+"Timp rămas: " + minutes + ":" + (seconds<10?"0":"") + seconds;
+time--;
+if(time < 0) showResults();
+},1000);
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
