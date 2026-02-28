@@ -1,112 +1,33 @@
 # Chestionare-RBY
 Chestionare auto cat B
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>ChestionareRBY - Categoria B</title>
-<style>
-body { font-family: Arial; background:#111; color:white; text-align:center; }
-.container { background:#1c1c1c; padding:20px; margin:40px auto; width:90%; max-width:600px; border-radius:10px; }
-button { padding:10px 20px; margin-top:15px; background:#00c853; border:none; color:white; cursor:pointer; }
-.correct { color:#00e676; }
-.wrong { color:#ff5252; }
-</style>
-</head>
-<body>
-
-<div class="container">
-<h2 id="timer">Timp rămas: 30:00</h2>
-<h3 id="question"></h3>
-<div id="answers"></div>
-<button onclick="nextQuestion()">Confirmă</button>
-</div>
-
-<script>
-
 let questions = [
-{
-q:"Care este viteza maximă în localitate?",
-a:["50 km/h","90 km/h","30 km/h"],
-correct:0
-},
-{
-q:"Culoarea roșie a semaforului indică:",
-a:["Reduci viteza","Oprești","Poți continua"],
-correct:1
-},
-{
-q:"Depășirea este interzisă:",
-a:["În curbă fără vizibilitate","Pe autostradă","Pe drum drept"],
-correct:0
-}
+{ q:"Care este viteza maximă în localitate?", a:["50 km/h","90 km/h","30 km/h"], correct:0 },
+{ q:"Culoarea roșie a semaforului indică:", a:["Reduci viteza","Oprești","Poți continua"], correct:1 },
+{ q:"Depășirea este interzisă:", a:["În curbă fără vizibilitate","Pe autostradă","Pe drum drept"], correct:0 },
+{ q:"Pe autostradă viteza maximă pentru categoria B este:", a:["90 km/h","130 km/h","110 km/h"], correct:1 },
+{ q:"Centura de siguranță este obligatorie:", a:["Doar în afara localității","Doar pentru șofer","Pentru toți ocupanții"], correct:2 },
+{ q:"La trecerea la nivel cu calea ferată fără bariere:", a:["Accelerezi","Oprești și te asiguri","Nu reduci viteza"], correct:1 },
+{ q:"Semnul STOP obligă la:", a:["Reducerea vitezei","Oprire obligatorie","Prioritate"], correct:1 },
+{ q:"Prioritate are:", a:["Vehiculul din dreapta","Cel mai rapid","Cel mai mare"], correct:0 },
+{ q:"Folosirea telefonului fără handsfree este:", a:["Permisă","Interzisă","Recomandată"], correct:1 },
+{ q:"Distanța minimă între vehicule trebuie:", a:["Menținută constant","Să permită oprirea în siguranță","Să fie cât mai mică"], correct:1 },
+{ q:"Pe timp de noapte în localitate folosim:", a:["Fază lungă","Fază scurtă","Avare"], correct:1 },
+{ q:"Alcoolul la volan:", a:["Este permis sub 0.8","Este interzis","Este recomandat puțin"], correct:1 },
+{ q:"Semnul triunghi roșu indică:", a:["Obligație","Interzicere","Avertizare"], correct:2 },
+{ q:"Depășirea prin dreapta este:", a:["Permisă","Interzisă în general","Obligatorie"], correct:1 },
+{ q:"La pietoni pe trecere:", a:["Accelerezi","Acordezi prioritate","Claxonezi"], correct:1 },
+{ q:"Semnalizarea schimbării direcției se face:", a:["După manevră","În timpul manevrei","Înainte de manevră"], correct:2 },
+{ q:"Anvelopele uzate afectează:", a:["Consum doar","Siguranța","Radio-ul"], correct:1 },
+{ q:"Oprirea este interzisă:", a:["Pe poduri","În parcare","Pe acostament"], correct:0 },
+{ q:"Conducerea agresivă este:", a:["Permisă","Sancționată","Recomandată"], correct:1 },
+{ q:"În intersecție fără indicatoare:", a:["Prioritate de dreapta","Prioritate cel rapid","Nu există reguli"], correct:0 },
+{ q:"Semnalizarea avarie se folosește:", a:["La urgență","Mereu","În trafic normal"], correct:0 },
+{ q:"Pe ploaie distanța de frânare:", a:["Scade","Crește","Rămâne la fel"], correct:1 },
+{ q:"Oboseala la volan:", a:["Nu afectează","Crește riscul de accident","Este benefică"], correct:1 },
+{ q:"Farurile de ceață se folosesc:", a:["Pe ceață densă","Mereu","Pe timp însorit"], correct:0 },
+{ q:"Parcarea pe trecerea de pietoni este:", a:["Permisă","Interzisă","Acceptată noaptea"], correct:1 },
+{ q:"Semnul rotund cu roșu indică:", a:["Obligație","Interzicere","Parcare"], correct:1 }
 ];
 
-while(questions.length < 26){
-questions.push(questions[Math.floor(Math.random()*3)]);
-}
-
-let current = 0;
-let score = 0;
-let wrongAnswers = [];
-
-function loadQuestion(){
-document.getElementById("question").innerText = "Întrebarea " + (current+1) + ": " + questions[current].q;
-let answersHTML = "";
-questions[current].a.forEach((ans,index)=>{
-answersHTML += `<input type="radio" name="ans" value="${index}"> ${ans}<br>`;
-});
-document.getElementById("answers").innerHTML = answersHTML;
-}
-
-function nextQuestion(){
-let selected = document.querySelector('input[name="ans"]:checked');
-if(!selected){ alert("Selectează un răspuns!"); return; }
-
-if(parseInt(selected.value) === questions[current].correct){
-score++;
-}else{
-wrongAnswers.push({
-question:questions[current].q,
-correct:questions[current].a[questions[current].correct]
-});
-}
-
-current++;
-if(current < 26){
-loadQuestion();
-}else{
-showResults();
-}
-}
-
-function showResults(){
-let resultHTML = `<h2>Rezultat: ${score}/26</h2>`;
-resultHTML += score >= 22 ? "<h3 class='correct'>ADMIS</h3>" : "<h3 class='wrong'>RESPINS</h3>";
-
-if(wrongAnswers.length > 0){
-resultHTML += "<h3>Întrebări greșite:</h3>";
-wrongAnswers.forEach(w=>{
-resultHTML += `<p><b>${w.question}</b><br>Răspuns corect: ${w.correct}</p>`;
-});
-}
-
-document.body.innerHTML = resultHTML;
-}
-
-let time = 1800;
-setInterval(function(){
-let minutes = Math.floor(time/60);
-let seconds = time%60;
-document.getElementById("timer").innerText =
-"Timp rămas: " + minutes + ":" + (seconds<10?"0":"") + seconds;
-time--;
-if(time < 0) showResults();
-},1000);
-
-loadQuestion();
-
-</script>
-
-</body>
-</html>
+// RANDOM fără repetare
+questions = questions.sort(() => 0.5 - Math.random()).slice(0,26);
